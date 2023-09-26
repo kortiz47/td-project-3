@@ -1,13 +1,9 @@
-//Global Variables
-const nameInput = document.querySelector('#name');
-const jobRoleMenu = document.querySelector('#title');
-const emailInput = document.querySelector('#email');
-const activities = document.querySelector('#activities');
-
 //#2 - NAME FIELD: When the page loads, the focus is on the name
+const nameInput = document.querySelector('#name');
 nameInput.focus();
 
 //#3 - JOB ROLE SECTION: When the 'other' is selected on the job role menu, show the text input
+const jobRoleMenu = document.querySelector('#title');
 const otherJobInput = document.querySelector('#other-job-role');
 otherJobInput.hidden = true;
 
@@ -23,11 +19,11 @@ jobRoleMenu.addEventListener('change', (e)=>{
 //#4 T-SHIRT INFO SECTION: when there are conflicting shirt designs and colors, conflicting options are hidden for user
 const shirtColor = document.querySelector('#color');
 shirtColor.disabled = true;
-
 const shirtDesign = document.querySelector('#design');
+const shirtColorOptions = shirtColor.querySelectorAll('option[data-theme]');
+
 shirtDesign.addEventListener('change', (e)=>{
     shirtColor.disabled = false;
-    const shirtColorOptions = shirtColor.querySelectorAll('option[data-theme]');
     for(let i=0; i<shirtColorOptions.length; i++){
         const shirtColors = shirtColorOptions[i];
         if(e.target.value !== shirtColors.dataset.theme){
@@ -41,6 +37,7 @@ shirtDesign.addEventListener('change', (e)=>{
 });
 
 //#5 ACTIVITIES SECTION: allows users to register for activities and see their real-time updated balance
+const activities = document.querySelector('#activities');
 let balance = 0;
 
 activities.addEventListener('change', (e)=>{
@@ -65,31 +62,31 @@ const bitcoin = document.querySelector('#bitcoin');
 
 //default payment view
 payment.children[1].setAttribute('selected', 'selected');
-paypal.style.display = 'none';
-bitcoin.style.display = 'none';
+paypal.hidden= true;
+bitcoin.hidden = true;
 
-//NEED TO COME BACK TO MAKE IT MORE READABLE
 payment.addEventListener('change', (e)=>{
     if(e.target.value === 'paypal'){
-        paypal.style.display = 'block';
-        creditCard.style.display = 'none';
-        bitcoin.style.display = 'none';
+        paypal.hidden = false;
+        creditCard.hidden = true;
+        bitcoin.hidden = true;
     }else if(e.target.value ==='bitcoin'){
-        paypal.style.display = 'none';
-        creditCard.style.display = 'none';
-        bitcoin.style.display = 'block';
+        paypal.hidden = true;
+        creditCard.hidden= true;
+        bitcoin.hidden = false;
     }else{
-        paypal.style.display = 'none';
-        creditCard.style.display = 'block';
-        bitcoin.style.display = 'none';
+        paypal.hidden = true;
+        creditCard.hidden = false;
+        bitcoin.hidden = true;
     }
 
 });
 
-//#7 FORM VALIDATION: 
+//#7 FORM VALIDATION:
 const form = document.querySelector('form');
+const emailInput = document.querySelector('#email');
 const activitiesBox =  document.querySelector('#activities-box');
-const inputs = activitiesBox.querySelectorAll('input');
+const activitySelections = activitiesBox.querySelectorAll('input');
 
 function nameValidation(){
     const nameValue = nameInput.value;
@@ -104,14 +101,15 @@ function emailValidation(){
 }
 
 function activitiesValidation(){
-    const inputsChecked =[];
-    for(let i=0; i<inputs.length; i++){
-        const checked = inputs[i].checked;
+    const activitySelectionsChecked =[];
+    for(let i=0; i<activitySelections.length; i++){
+        const activitiesSelected = activitySelections[i]
+        const checked = activitiesSelected.checked;
         if(checked){
-            inputsChecked.push(inputs[i]);
+            activitySelectionsChecked.push(activitiesSelected);
         } 
     }
-    if(inputsChecked.length>=1){
+    if(activitySelectionsChecked.length>=1){
         return true;
     }else{
         return false;
@@ -139,14 +137,13 @@ function creditCardValidation(){
     }
 }
 
-
-
-//8 - Activities Section tabbing
-for(let i=0; i<inputs.length; i++){
-    inputs[i].addEventListener('focus', ()=>{
-        inputs[i].parentElement.className = 'focus';
+//#8 - ACCESSIBILITY
+for(let i=0; i<activitySelections.length; i++){
+    const activitiesSelected = activitySelections[i];
+    activitiesSelected.addEventListener('focus', ()=>{
+        activitiesSelected.parentElement.className = 'focus';
     });
-    inputs[i].addEventListener('blur', ()=>{
+    activitiesSelected.addEventListener('blur', ()=>{
         const focus = activitiesBox.querySelectorAll('.focus');
         for(let i=0; i<focus.length; i++){
             focus[i].removeAttribute('class');
