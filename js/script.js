@@ -20,7 +20,7 @@ jobRoleMenu.addEventListener('change', (e)=>{
 
 });
 
-//#4 T-SHIRT INFO SECTION: 
+//#4 T-SHIRT INFO SECTION: when there are conflicting shirt designs and colors, conflicting options are hidden for user
 const shirtColor = document.querySelector('#color');
 shirtColor.disabled = true;
 
@@ -40,7 +40,7 @@ shirtDesign.addEventListener('change', (e)=>{
     
 });
 
-//Activities Section - cost
+//#5 ACTIVITIES SECTION: allows users to register for activities and see their real-time updated balance
 let balance = 0;
 
 activities.addEventListener('change', (e)=>{
@@ -56,16 +56,19 @@ activities.addEventListener('change', (e)=>{
     activitiesBalance.innerHTML = `Total: $${balance}`;
 });
 
-//Payment Info Section
+//#6 PAYMENT INFO SECTION:
 const payment = document.querySelector('#payment');
-payment.children[1].selected = true;
+
 const creditCard = document.querySelector('#credit-card');
 const paypal = document.querySelector('#paypal');
-paypal.style.display = 'none';
 const bitcoin = document.querySelector('#bitcoin');
+
+//default payment view
+payment.children[1].setAttribute('selected', 'selected');
+paypal.style.display = 'none';
 bitcoin.style.display = 'none';
 
-//select credit card by default - payment.children[1]
+//NEED TO COME BACK TO MAKE IT MORE READABLE
 payment.addEventListener('change', (e)=>{
     if(e.target.value === 'paypal'){
         paypal.style.display = 'block';
@@ -83,7 +86,7 @@ payment.addEventListener('change', (e)=>{
 
 });
 
-//form validation
+//#7 FORM VALIDATION: 
 const form = document.querySelector('form');
 const activitiesBox =  document.querySelector('#activities-box');
 const inputs = activitiesBox.querySelectorAll('input');
@@ -131,7 +134,6 @@ function creditCardValidation(){
         }else{
             return false;
         }
-//come back to this - what would the return value be in credit card is not selected?
     }else{
         return true;
     }
@@ -153,29 +155,106 @@ for(let i=0; i<inputs.length; i++){
     }); 
 }
 
-//9 - visual validation
-function errorMessagesName(){
+//#9 VISUAL VALIDATION ERRORS
+function errorMessageName(){
     const selector = nameInput;
     const selectorParent = selector.parentElement;
+    const selectorHint = document.querySelector('#name-hint');
     if(!nameValidation()){
-        selectorParent.className = 'not-valid';
-    } 
+        selectorParent.classList.add('not-valid');
+        selectorParent.classList.remove('valid');
+        selectorHint.style.display = 'block';
+    }else{
+        selectorParent.classList.add('valid');
+        selectorParent.classList.remove('not-valid');
+        selectorHint.style.display = 'none';
+    }
 }
 
-function errorMessagesEmail(){
+function errorMessageEmail(){
     const selector = emailInput;
     const selectorParent = selector.parentElement;
+    const selectorHint = document.querySelector('#email-hint');
     if(!emailValidation()){
-        selectorParent.className = 'not-valid';
-    } 
+        selectorParent.classList.add('not-valid');
+        selectorParent.classList.remove('valid');
+        selectorHint.style.display = 'block';
+    }else{
+        selectorParent.classList.add('valid');
+        selectorParent.classList.remove('not-valid');
+        selectorHint.style.display = 'none';
+    }
 }
 
-// function errorMessagesActivities(){
-//     const parent = document.querySelector(`#activities`);
-//     if(!activitiesValidation()){
-//         parent.classList.add = 'not-valid';
-//     } 
-// }
+function errorMessageActivities(){
+    const selector = activitiesBox;
+    const selectorParent = selector.parentElement;
+    const selectorHint = document.querySelector('#activities-hint');
+    if(!activitiesValidation()){
+        selectorParent.classList.add('not-valid');
+        selectorParent.classList.remove('valid');
+        selectorHint.style.display = 'block';
+    }else{
+        selectorParent.classList.remove('not-valid');
+        selectorParent.classList.add('valid');
+        selectorHint.style.display = 'none';
+    }
+}
+
+function errorMessageCC(){
+    const cardNumRegex = /^\d{13,16}$/;
+    const cardNumInput = document.querySelector('#cc-num').value;
+    const ccHint = document.querySelector('#cc-hint');
+    if(!creditCardValidation()){
+        if(!cardNumRegex.test(cardNumInput)){
+            ccHint.parentElement.classList.add('not-valid');
+            ccHint.parentElement.classList.remove('valid');
+            ccHint.style.display = 'block';
+        }else{
+            ccHint.parentElement.classList.add('valid');
+            ccHint.parentElement.classList.remove('not-valid');
+            ccHint.style.display = 'none';
+        }
+    }
+}
+
+function errorMessageZipCode(){
+    const zipCodeRegex = /^\d{5}$/;
+    const zipCodeInput = document.querySelector('#zip').value;
+    const zipCodeHint = document.querySelector('#zip-hint');
+    if(!creditCardValidation()){
+        if(!zipCodeRegex.test(zipCodeInput)){
+            zipCodeHint.parentElement.classList.add('not-valid');
+            zipCodeHint.parentElement.classList.remove('valid');
+            zipCodeHint.style.display = 'block';
+        }else{
+            zipCodeHint.parentElement.classList.add('valid');
+            zipCodeHint.parentElement.classList.remove('not-valid');
+            zipCodeHint.style.display = 'none';
+        }
+    }
+}
+
+function errorMessageCVV (){
+    const cvvRegex = /^\d{3}$/;
+    const cvvInput = document.querySelector('#cvv').value;
+    const cvvHint = document.querySelector('#cvv-hint');
+
+    if(!creditCardValidation()){
+        if(!cvvRegex.test(cvvInput)){
+            cvvHint.parentElement.classList.add('not-valid');
+            cvvHint.parentElement.classList.remove('valid');
+            cvvHint.style.display = 'block';
+        }else{
+            cvvHint.parentElement.classList.add('valid');
+            cvvHint.parentElement.classList.remove('not-valid');
+            cvvHint.style.display = 'none';
+        }
+    }
+}
+
+
+
 
 form.addEventListener('submit',(e)=>{
     const name = nameValidation();
@@ -187,7 +266,11 @@ form.addEventListener('submit',(e)=>{
         console.log('form submited');
     }else{
      e.preventDefault();
-     errorMessagesName();
-     errorMessagesEmail();
+     errorMessageName();
+     errorMessageEmail();
+     errorMessageActivities();
+     errorMessageCC();
+     errorMessageZipCode();
+     errorMessageCVV();
     }
 });
