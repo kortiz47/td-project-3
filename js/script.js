@@ -1,25 +1,31 @@
-//Selector Variables
-
-//Name Input Section
-const name = document.querySelector('#name').focus();
-
-//Job Input Section
-const otherJobInput = document.querySelector('#other-job-role');
-otherJobInput.style.display = 'none';
+//Global Variables
+const nameInput = document.querySelector('#name');
 const jobRoleMenu = document.querySelector('#title');
+const emailInput = document.querySelector('#email');
+const activities = document.querySelector('#activities');
+
+//#2 - NAME FIELD: When the page loads, the focus is on the name
+nameInput.focus();
+
+//#3 - JOB ROLE SECTION: When the 'other' is selected on the job role menu, show the text input
+const otherJobInput = document.querySelector('#other-job-role');
+otherJobInput.hidden = true;
+
 jobRoleMenu.addEventListener('change', (e)=>{
     if(e.target.value === 'other'){
         otherJobInput.style.display = 'block';
     }else{
         otherJobInput.style.display = 'none'; 
     }
+
 });
 
-//T-Shirt Info Section
+//#4 T-SHIRT INFO SECTION: 
 const shirtColor = document.querySelector('#color');
 shirtColor.disabled = true;
-const shirtDesign = document.querySelector('#design');
 
+const shirtDesign = document.querySelector('#design');
+//need to shorten and write clearer code for the shirt design
 shirtDesign.addEventListener('change', (e)=>{
     shirtColor.disabled = false;
     const heartJS = document.querySelectorAll('[data-theme = "heart js"]');
@@ -37,21 +43,21 @@ shirtDesign.addEventListener('change', (e)=>{
     }
     for(let i =0; i<jsPuns.length; i++){
         if(e.target.value === 'js puns' && heartJS){
-            shirtColor.value = 'hidden';
+            shirtColor.firstElementChild.removeAttribute('hidden');
         }else if(e.target.value === 'heart js' && jsPuns){
-            shirtColor.value = 'hidden';
+            shirtColor.firstElementChild.removeAttribute('hidden');
         }
     }
     
 });
 
 //Activities Section - cost
-const activities = document.querySelector('#activities');
 let balance = 0;
+
 activities.addEventListener('change', (e)=>{
     const checkbox = e.target;
     const price = parseInt(checkbox.dataset.cost);
-    const checked = checkbox.checked; //will store true or false - if true add price to balance, if false subtract price from balance
+    const checked = checkbox.checked;
     if(checked){
         balance+=price;
     }else{
@@ -94,15 +100,15 @@ const activitiesBox =  document.querySelector('#activities-box');
 const inputs = activitiesBox.querySelectorAll('input');
 
 function nameValidation(){
-    const nameInput = document.querySelector('#name').value;
+    const nameValue = nameInput.value;
     const nameRegex = /\w+/;
-    return nameRegex.test(nameInput);
+    return nameRegex.test(nameValue);
 }
 
 function emailValidation(){
-    const emailInput = document.querySelector('#email').value;
+    const emailValue = emailInput.value;
     const emailRegex = /^[^@]+@[^@.]+\.[a-z]+$/i;
-    return emailRegex.test(emailInput);
+    return emailRegex.test(emailValue);
 }
 
 function activitiesValidation(){
@@ -142,19 +148,7 @@ function creditCardValidation(){
     }
 }
 
-form.addEventListener('submit',(e)=>{
-    const name = nameValidation();
-    const email = emailValidation();
-    const activities = activitiesValidation();
-    const payment = creditCardValidation();
-    
-    if(name && email && activities && payment){
-        console.log('form submited');
-    }else{
-     e.preventDefault();
-     console.log('not submitted')
-    }
-});
+
 
 //8 - Activities Section tabbing
 for(let i=0; i<inputs.length; i++){
@@ -171,3 +165,40 @@ for(let i=0; i<inputs.length; i++){
 }
 
 //9 - visual validation
+function errorMessagesName(){
+    const selector = nameInput;
+    const selectorParent = selector.parentElement;
+    if(!nameValidation()){
+        selectorParent.className = 'not-valid';
+    } 
+}
+
+function errorMessagesEmail(){
+    const selector = emailInput;
+    const selectorParent = selector.parentElement;
+    if(!emailValidation()){
+        selectorParent.className = 'not-valid';
+    } 
+}
+
+// function errorMessagesActivities(){
+//     const parent = document.querySelector(`#activities`);
+//     if(!activitiesValidation()){
+//         parent.classList.add = 'not-valid';
+//     } 
+// }
+
+form.addEventListener('submit',(e)=>{
+    const name = nameValidation();
+    const email = emailValidation();
+    const activities = activitiesValidation();
+    const payment = creditCardValidation();
+    
+    if(name && email && activities && payment){
+        console.log('form submited');
+    }else{
+     e.preventDefault();
+     errorMessagesName();
+     errorMessagesEmail();
+    }
+});
