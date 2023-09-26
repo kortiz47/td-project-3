@@ -25,27 +25,16 @@ const shirtColor = document.querySelector('#color');
 shirtColor.disabled = true;
 
 const shirtDesign = document.querySelector('#design');
-//need to shorten and write clearer code for the shirt design
 shirtDesign.addEventListener('change', (e)=>{
     shirtColor.disabled = false;
-    const heartJS = document.querySelectorAll('[data-theme = "heart js"]');
-    const jsPuns = document.querySelectorAll('[data-theme = "js puns"]');
-    if(e.target.value === 'js puns'){
-        for(let i=0; i<heartJS.length; i++){
-            heartJS[i].style.display = 'none';
-            jsPuns[i].style.display = 'block';
-        }
-    }else{
-        for(let i=0; i<jsPuns.length; i++){
-            jsPuns[i].style.display = 'none';
-            heartJS[i].style.display = 'block';
-        }
-    }
-    for(let i =0; i<jsPuns.length; i++){
-        if(e.target.value === 'js puns' && heartJS){
-            shirtColor.firstElementChild.removeAttribute('hidden');
-        }else if(e.target.value === 'heart js' && jsPuns){
-            shirtColor.firstElementChild.removeAttribute('hidden');
+    const shirtColorOptions = shirtColor.querySelectorAll('option[data-theme]');
+    for(let i=0; i<shirtColorOptions.length; i++){
+        const shirtColors = shirtColorOptions[i];
+        if(e.target.value !== shirtColors.dataset.theme){
+            shirtColor.value = '';
+            shirtColors.style.display = 'none';
+        }else{
+            shirtColors.style.display = 'block';
         }
     }
     
