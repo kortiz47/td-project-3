@@ -192,12 +192,7 @@ function displayErrors(validator, validatorFunc){
     }
 }
 
-//SUBMIT EVENT LISTENER
-nameInput.addEventListener('blur', ()=>{
-    displayErrors(nameInput, nameValidation);
-});
-
-emailInput.addEventListener('blur', ()=>{
+function emailDisplayError(){
     if(emailInput.value === ''){
         const emailHint = document.querySelector('#email-hint');
         emailHint.textContent = 'Email address field cannot be blank';
@@ -207,6 +202,15 @@ emailInput.addEventListener('blur', ()=>{
         emailHint.textContent = 'Email address must be formatted correctly';
         displayErrors(emailInput, emailValidation);
     }
+}
+
+//SUBMIT EVENT LISTENER
+nameInput.addEventListener('blur', ()=>{
+    displayErrors(nameInput, nameValidation);
+});
+
+emailInput.addEventListener('blur', ()=>{
+    emailDisplayError();
 });
 
 activitiesBox.addEventListener('click', ()=>{
@@ -235,7 +239,7 @@ form.addEventListener('submit',(e)=>{
     if(!name || !email || !activities || !cardNumber || !zipcode || !cvv){
         e.preventDefault();
         displayErrors(nameInput, nameValidation);
-        displayErrors(emailInput, emailValidation);
+        emailDisplayError();
         displayErrors(activitiesBox, activitiesValidation);
         displayErrors(ccNum, cardNumberValidation);
         displayErrors(zipCodeNum, zipCodeValidation);
