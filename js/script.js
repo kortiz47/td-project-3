@@ -1,8 +1,8 @@
-//#2 - NAME FIELD: When the page loads, the focus is on the name
+//#2 - NAME FIELD: When the page loads, the initial focus of the page is on the name
 const nameInput = document.querySelector('#name');
 nameInput.focus();
 
-//#3 - JOB ROLE SECTION: When the 'other' is selected on the job role menu, show the text input
+//#3 - JOB ROLE SECTION: When the 'other' is selected on the job role menu, the text input for 'other' is displayed, otherwise it is hidden
 const jobRoleMenu = document.querySelector('#title');
 const otherJobInput = document.querySelector('#other-job-role');
 otherJobInput.hidden = true;
@@ -15,7 +15,7 @@ jobRoleMenu.addEventListener('change', (e)=>{
     }
 });
 
-//#4 T-SHIRT INFO SECTION: when there are conflicting shirt designs and colors, conflicting options are hidden for user
+//#4 T-SHIRT INFO SECTION: when there are conflicting shirt designs and colors, conflicting options are hidden from the user and therefore are not able to select conflicting designs and colors
 const shirtColor = document.querySelector('#color');
 shirtColor.disabled = true;
 const shirtDesign = document.querySelector('#design');
@@ -35,7 +35,7 @@ shirtDesign.addEventListener('change', (e)=>{
     
 });
 
-//#5 ACTIVITIES SECTION: allows users to register for activities and see their real-time updated balance
+//#5 ACTIVITIES SECTION: allows users to register for activities and see their real-time updated balance. Extra credit was added as well to disabled events that are during conflicting dates and times
 const activities = document.querySelector('#activities');
 let balance = 0;
 
@@ -52,7 +52,7 @@ activities.addEventListener('change', (e)=>{
     const activitiesBalance = document.querySelector('#activities-cost');
     activitiesBalance.innerHTML = `Total: $${balance}`;
 
-    //Conflicting Activity Times
+    //CONFLICTING ACTIVITY TIMES - conflicting events that are at the same date and time are disabled when selected
     const selectedDayAndTime = selected.dataset.dayAndTime;
     const sameDayAndTime = document.querySelectorAll(`[data-day-and-time = "${selectedDayAndTime}"]`);
     for(let i=0; i<sameDayAndTime.length; i++){
@@ -63,9 +63,8 @@ activities.addEventListener('change', (e)=>{
 
 
 
-//#6 PAYMENT INFO SECTION:
+//#6 PAYMENT INFO SECTION: A credit card is selected as the default payment method and all payment methods are hidden and shown based on the user's selected option
 const payment = document.querySelector('#payment');
-
 const creditCard = document.querySelector('#credit-card');
 const paypal = document.querySelector('#paypal');
 const bitcoin = document.querySelector('#bitcoin');
@@ -74,7 +73,7 @@ const bitcoin = document.querySelector('#bitcoin');
 payment.children[1].setAttribute('selected', 'selected');
 paypal.hidden= true;
 bitcoin.hidden = true;
-
+//hide and show payment options
 payment.addEventListener('change', (e)=>{
     if(e.target.value === 'paypal'){
         paypal.hidden = false;
@@ -92,7 +91,7 @@ payment.addEventListener('change', (e)=>{
 
 });
 
-//#7 FORM VALIDATION:
+//#7 FORM VALIDATION: name, email, activities, credit card number, zipcode, and cvv are all validated both to prevent the user from submitting the form if incorrect/incomplete and to show them their errors
 const form = document.querySelector('form');
 const emailInput = document.querySelector('#email');
 const activitiesBox =  document.querySelector('#activities-box');
@@ -101,17 +100,35 @@ const ccNum = document.querySelector('#cc-num');
 const zipCodeNum = document.querySelector('#zip');
 const cvvNum = document.querySelector('#cvv');
 
+/**
+ * nameValidation()
+ * @param none
+ * @returns boolean
+ */
+
 function nameValidation(){
     const nameValue = nameInput.value;
     const nameRegex = /\w+/;
     return nameRegex.test(nameValue);
 }
 
+/**
+ * emailValidation()
+ * @param none
+ * @returns boolean
+ */
+
 function emailValidation(){
     const emailValue = emailInput.value;
     const emailRegex = /^[^@]+@[^@.]+\.[a-z]+$/i;
     return emailRegex.test(emailValue);
 }
+
+/**
+ * activitiesValidation()
+ * @param none
+ * @returns boolean
+ */
 
 function activitiesValidation(){
     const activitySelectionsChecked =[];
@@ -129,6 +146,12 @@ function activitiesValidation(){
     }
 }
 
+/**
+ * cardNumberValidation()
+ * @param none
+ * @returns boolean
+ */
+
 function cardNumberValidation(){
     if(payment.value === 'credit-card'){
         const cardNumRegex = /^\d{13,16}$/;
@@ -139,6 +162,12 @@ function cardNumberValidation(){
     }
 }
 
+
+/**
+ * zipCodeValidation()
+ * @param none
+ * @returns boolean
+ */
 function zipCodeValidation(){
     if(payment.value === 'credit-card'){
         const zipCodeRegex = /^\d{5}$/;
@@ -148,6 +177,12 @@ function zipCodeValidation(){
         return true;
     }
 }
+
+/**
+ * cvvValidation()
+ * @param none
+ * @returns boolean
+ */
 
 function cvvValidation(){
     if(payment.value === 'credit-card'){
@@ -175,7 +210,11 @@ for(let i=0; i<activitySelections.length; i++){
 }
 
 //#9 VISUAL VALIDATION ERRORS
-
+/**
+ * displayErrors()
+ * @param {variable} validator - takes in the variable that stores the element you want to focus on
+ * @param {function} validatorFunc - takes the validator function associated with the focus element variable 
+ */
 function displayErrors(validator, validatorFunc){
     const selector = validator;
     const selectorParent = selector.parentElement;
@@ -192,6 +231,12 @@ function displayErrors(validator, validatorFunc){
     }
 }
 
+/**
+ * emailDisplayError()
+ * @param none
+ * runs a conditional
+ */
+
 function emailDisplayError(){
     if(emailInput.value === ''){
         const emailHint = document.querySelector('#email-hint');
@@ -204,7 +249,7 @@ function emailDisplayError(){
     }
 }
 
-//SUBMIT EVENT LISTENER
+//REAL TIME VALIDATION ERRORS on blur or click events
 nameInput.addEventListener('blur', ()=>{
     displayErrors(nameInput, nameValidation);
 });
@@ -228,6 +273,12 @@ zipCodeNum.addEventListener('blur', ()=>{
 cvvNum.addEventListener('blur', ()=>{
     displayErrors(cvvNum, cvvValidation);
 });
+
+//SUBMIT VALIDATION ERRORS
+
+/**
+ * Final event listener to listen for errors when the form is submitted
+ */
 form.addEventListener('submit',(e)=>{
     const name = nameValidation();
     const email = emailValidation();
