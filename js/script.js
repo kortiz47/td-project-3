@@ -26,7 +26,8 @@ shirtDesign.addEventListener('change', (e)=>{
     for(let i=0; i<shirtColorOptions.length; i++){
         const shirtColors = shirtColorOptions[i];
         if(e.target.value !== shirtColors.dataset.theme){
-            shirtColor.value = '';
+            const firstOption = document.querySelector(`[data-theme = "${e.target.value}"]`);
+            firstOption.selected = true;
             shirtColors.style.display = 'none';
         }else{
             shirtColors.style.display = 'block';
@@ -58,6 +59,11 @@ activities.addEventListener('change', (e)=>{
     for(let i=0; i<sameDayAndTime.length; i++){
         const conflictingEvents = sameDayAndTime[i];
         conflictingEvents.disabled = selected.checked && conflictingEvents !== selected;
+        if(conflictingEvents.disabled){
+            conflictingEvents.parentElement.className = 'disabled';
+        }else{
+            conflictingEvents.parentElement.className = ''; 
+        }
     }
 });
 
