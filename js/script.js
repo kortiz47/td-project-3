@@ -41,9 +41,10 @@ const activities = document.querySelector('#activities');
 let balance = 0;
 
 activities.addEventListener('change', (e)=>{
-    const checkbox = e.target;
-    const price = parseInt(checkbox.dataset.cost);
-    const checked = checkbox.checked;
+    const selected = e.target;
+    //Total Activities Cost
+    const price = parseInt(selected.dataset.cost);
+    const checked = selected.checked;
     if(checked){
         balance+=price;
     }else{
@@ -51,10 +52,15 @@ activities.addEventListener('change', (e)=>{
     }
     const activitiesBalance = document.querySelector('#activities-cost');
     activitiesBalance.innerHTML = `Total: $${balance}`;
+
+    //Conflicting Activity Times
+    const selectedDayAndTime = selected.dataset.dayAndTime;
+    const sameDayAndTime = document.querySelectorAll(`[data-day-and-time = "${selectedDayAndTime}"]`);
+    for(let i=0; i<sameDayAndTime.length; i++){
+        const conflictingEvents = sameDayAndTime[i];
+        conflictingEvents.disabled = selected.checked && conflictingEvents !== selected;
+    }
 });
-
-//EXTRA CREDIT - CONFLICTING ACTIVITY TIMES
-
 
 
 
@@ -169,9 +175,6 @@ for(let i=0; i<activitySelections.length; i++){
     }); 
 }
 
-
-
-
 //#9 VISUAL VALIDATION ERRORS
 
 function displayErrors(validator, validatorFunc){
@@ -191,6 +194,29 @@ function displayErrors(validator, validatorFunc){
 }
 
 //SUBMIT EVENT LISTENER
+nameInput.addEventListener('blur', ()=>{
+    displayErrors(nameInput, nameValidation);
+});
+
+emailInput.addEventListener('blur', ()=>{
+    displayErrors(emailInput, emailValidation);
+});
+
+activitiesBox.addEventListener('click', ()=>{
+    displayErrors(activitiesBox, activitiesValidation);
+});
+
+ccNum.addEventListener('blur', ()=>{
+    displayErrors(ccNum, cardNumberValidation);
+});
+
+zipCodeNum.addEventListener('blur', ()=>{
+    displayErrors(zipCodeNum, zipCodeValidation);
+});
+
+cvvNum.addEventListener('blur', ()=>{
+    displayErrors(cvvNum, cvvValidation);
+});
 form.addEventListener('submit',(e)=>{
     const name = nameValidation();
     const email = emailValidation();
@@ -207,7 +233,5 @@ form.addEventListener('submit',(e)=>{
         displayErrors(ccNum, cardNumberValidation);
         displayErrors(zipCodeNum, zipCodeValidation);
         displayErrors(cvvNum, cvvValidation);
-    }else{
-     console.log('form submitted');
     }
 });
