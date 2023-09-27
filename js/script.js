@@ -13,7 +13,6 @@ jobRoleMenu.addEventListener('change', (e)=>{
     }else{
         otherJobInput.style.display = 'none'; 
     }
-
 });
 
 //#4 T-SHIRT INFO SECTION: when there are conflicting shirt designs and colors, conflicting options are hidden for user
@@ -199,7 +198,15 @@ nameInput.addEventListener('blur', ()=>{
 });
 
 emailInput.addEventListener('blur', ()=>{
-    displayErrors(emailInput, emailValidation);
+    if(emailInput.value === ''){
+        const emailHint = document.querySelector('#email-hint');
+        emailHint.textContent = 'Email address field cannot be blank';
+        displayErrors(emailInput, emailValidation);
+    }else{
+        const emailHint = document.querySelector('#email-hint');
+        emailHint.textContent = 'Email address must be formatted correctly';
+        displayErrors(emailInput, emailValidation);
+    }
 });
 
 activitiesBox.addEventListener('click', ()=>{
